@@ -4,25 +4,19 @@ import shutil
 import os
 import subprocess
 from .json_utils import write_json,read_json
+import sys
 
-write_json("ollama_installed",True if shutil.which("ollama") else False)
+write_json("ollama_installed",shutil.which("ollama") == True)
 
 def add_subparser(subparsers):
-    download_parser = subparsers.add_parser(
-        "download-model",
-        help = "Download the commit message generator model."
+    setup = subparsers.add_parser(
+        "setup",
+        help = "Setup ezcmt."
     )
 
-    setup_parser = subparsers.add_parser(
-        "setup-model",
-        help = "Setup the model."
-    )
+    setup.set_defaults(func=setup_func)
 
-    download_parser.set_defaults(func=download)
-
-    setup_parser.set_defaults(func=setup)
-
-def download(args):
+def setup_func(args):
     model_downloaded = read_json("model_downloaded")
 
     if model_downloaded:
@@ -42,28 +36,52 @@ def download(args):
 
         try:
             gdown.download("https://drive.google.com/uc?id=1N3Jdi1Xctn4DRLhD6-jvu4Qe_m1yWD-E",
-                        model_folder + "/ezcmt.gguf")
+                            model_folder + "/ezcmt.gguf")
         except Exception:
             print("LoRA's file already exists. It could be because you didnt delete the model files before uninstalling ezcmt. Run 'ezcmt delete-model' before uninstalling ezcmt to remove the model files.")
 
         try:
             gdown.download("https://drive.google.com/uc?id=1uWTnCZJ2mR7fbJfrUWFSLjxOgT3YdxSg",
-                        model_folder + "/qwen2.5-coder.gguf")
+                            model_folder + "/qwen2.5-coder.gguf")
         except Exception:
             print("Base model's file already exists. It could be because you didnt delete the model files before uninstalling ezcmt. Run 'ezcmt delete-model' before uninstalling ezcmt to remove the model files.")
 
-        print("Download done.")
+        print("The model is downloaded.")
 
         write_json("model_downloaded",True)
-
-def setup(args):
-    if read_json("setup_done"):
-        print("Setup is already done.")
+    
+    if read_json("ollama_installed"):
+        print("Ollama is already installed.")
+    
     else:
-        if read_json("ollama_installed"):
-            result = subprocess.Popen(["ollama","create","-f","cli_tool/ezcmt-model/Modelfile","_ezcmt"])
-            if result.returncode == 0:
-                print("An error occured. Perhaps Ollama isnt installed?")
-            write_json("setup_done",True)
+        if sys.platform.startswith("win32") or sys.platform.startswith("cygwin"):
+            gdown.download("https://drive.google.com/uc?id=1er8wPF-LTETLzsp09KA51fl8V0RisdAD",
+                            r"cli_tool\OllamaSetup.exe")
+            
+            print("Launched Ollama setup, check the background apps to find it.")
+            subprocess.run(r"cli_tool\OllamaSetup.exe")
+
+        elif sys.platform.startswith("linux"):
+            os.system("curl -fsSL https://ollama.com/install.sh | sh")
+        
         else:
-            print("Cannot setup when Ollama isnt installed. Install it at https://ollama.com/")
+            
+            if shutil.which("brew") == None:
+                os.system("/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"")    
+                subprocess.run(f"echo 'eval \"$(/opt/homebrew/bin/brew shellenv)\"' >> /Users/{os.getlogin()}/.zprofile",shell=True,executable="/bin/bash")
+                subprocess.run("eval \"$(/opt/homebrew/bin/brew shellenv)\"",shell=True,executable="/bin/bash")
+            
+            os.system("brew install --cask ollama")
+        
+        print("Ollama is installed.")
+        write_json("ollama_installed",True)
+
+    if read_json("setup_done") == False:
+        
+        subprocess.run(["ollama","create","-f","cli_tool/ezcmt-model/Modelfile","_ezcmt"])
+
+        print("Setup done.")
+        write_json("setup_done",True)
+    
+    else:
+        print("Setup is already done.")
