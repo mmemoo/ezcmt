@@ -1,5 +1,5 @@
 # ezcmt
-An AI CLI tool to make finding commit messages easier!\
+An AI CLI tool to make coming up with commit messages easier!\
 \
 It requires no internet connection and is completely free with its use of specialized local AI model.
 #
