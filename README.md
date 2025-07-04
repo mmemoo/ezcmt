@@ -7,11 +7,9 @@ It requires no internet connection and is completely free with its use of specia
 # How to use
 ```
 pip install ezcmt
-ezcmt download-model
-ezcmt setup-model
+ezcmt setup
 ezcmt generate --count 5
 ```
-(also you should have ollama installed -> https://ollama.com/)
 #
 
 # System requirements
