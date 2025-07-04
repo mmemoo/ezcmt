@@ -29,20 +29,20 @@ def setup_func(args):
             pass
 
         try:
-            gdown.download("https://drive.google.com/uc?id=1yteR3xbPi12ATNAO9Ys1nX-iAd_7qpnB",
+            gdown.download("https://drive.google.com/uc?id=1o4hX3fzGAuAE-d3G-nx0N8GQbLZ09AZU",
                         model_folder + "/Modelfile")
         except Exception:
             print("Modelfile already exists. It could be because you didnt delete the model files before uninstalling ezcmt. Run 'ezcmt delete-model' before uninstalling ezcmt to remove the model files.")
 
         try:
-            gdown.download("https://drive.google.com/uc?id=1N3Jdi1Xctn4DRLhD6-jvu4Qe_m1yWD-E",
-                            model_folder + "/ezcmt.gguf")
+            gdown.download("https://drive.google.com/uc?id=1aV-TM360UCtj2Fgu9QAQKvUF80ZlWGkU",
+                            model_folder + "/ezcmt-q8_0.gguf")
         except Exception:
             print("LoRA's file already exists. It could be because you didnt delete the model files before uninstalling ezcmt. Run 'ezcmt delete-model' before uninstalling ezcmt to remove the model files.")
 
         try:
-            gdown.download("https://drive.google.com/uc?id=1uWTnCZJ2mR7fbJfrUWFSLjxOgT3YdxSg",
-                            model_folder + "/qwen2.5-coder.gguf")
+            gdown.download("https://drive.google.com/uc?id=1_Ob-YzYzpUKf9TvN1heeQTHkVBnPuC-S",
+                            model_folder + "/Mistral-7B-v0.3.Q8_0.gguf")
         except Exception:
             print("Base model's file already exists. It could be because you didnt delete the model files before uninstalling ezcmt. Run 'ezcmt delete-model' before uninstalling ezcmt to remove the model files.")
 
